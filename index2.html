@@ -1,0 +1,308 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { Image as ImageIcon, HardDrive, Clock, Download, Loader2, WifiOff, PackageX, Camera, BarChart2, Filter, ChevronDown } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+
+// --- Main App Component ---
+export default function App() {
+    const [files, setFiles] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [isUploadsVisible, setIsUploadsVisible] = useState(true);
+
+    const fetchFilesFromAWS = async () => {
+        setIsLoading(true);
+        setError(null);
+        
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        try {
+            const API_GATEWAY_ENDPOINT = 'https://skxciixam6.execute-api.ap-south-1.amazonaws.com/prod/files';
+            const response = await fetch(API_GATEWAY_ENDPOINT);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to fetch data from AWS.');
+            }
+            const data = await response.json();
+            setFiles(data);
+            
+        } catch (err)
+ {
+            setError(err.message || "An error occurred while fetching data.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchFilesFromAWS();
+    }, []);
+
+    // --- Data Processing for Dashboard ---
+    const imageFiles = useMemo(() => files.filter(file => !file.isJson), [files]);
+    const imageCount = imageFiles.length;
+
+    const filteredFiles = useMemo(() => {
+        if (!startDate && !endDate) {
+            return files;
+        }
+
+        return files.filter(file => {
+            // file.timestamp is a full ISO 8601 string (e.g., "2023-10-27T10:00:00.000Z")
+            // startDate and endDate from datetime-local are like "2023-10-27T10:00"
+            // Direct string comparison works perfectly for this format.
+            const fileTimestamp = file.timestamp;
+
+            if (startDate && fileTimestamp < startDate) {
+                return false;
+            }
+            if (endDate && fileTimestamp > endDate) {
+                return false;
+            }
+            return true;
+        });
+    }, [files, startDate, endDate]);
+
+    const chartData = useMemo(() => {
+        const uploadsByDate = imageFiles.reduce((acc, file) => {
+            const date = new Date(file.timestamp).toLocaleDateString('en-CA'); 
+            if (!acc[date]) {
+                acc[date] = 0;
+            }
+            acc[date]++;
+            return acc;
+        }, {});
+
+        return Object.entries(uploadsByDate)
+            .map(([date, uploads]) => ({ date, uploads }))
+            .sort((a, b) => new Date(a.date) - new Date(b.date));
+    }, [imageFiles]);
+
+    const handleResetFilter = () => {
+        setStartDate('');
+        setEndDate('');
+    };
+
+    const formatBytes = (bytes, decimals = 2) => {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const dm = decimals < 0 ? 0 : decimals;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    };
+    
+    // --- UI Sub-components ---
+
+    const StatCard = ({ title, value, icon }) => (
+        <div className="bg-gray-800 border border-gray-700 rounded-lg p-5 flex items-center space-x-4">
+            <div className="bg-gray-700/50 p-3 rounded-lg">{icon}</div>
+            <div>
+                <p className="text-gray-400 text-sm">{title}</p>
+                <p className="text-2xl font-bold text-white">{value}</p>
+            </div>
+        </div>
+    );
+
+    const UploadsChart = ({ data }) => (
+        <div style={{ width: '100%', height: 300 }}>
+            <ResponsiveContainer>
+                <BarChart data={data} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#4a5568" />
+                    <XAxis dataKey="date" stroke="#9ca3af" fontSize={12} />
+                    <YAxis stroke="#9ca3af" fontSize={12} allowDecimals={false} />
+                    <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #4a5568' }} />
+                    <Legend wrapperStyle={{ fontSize: '14px' }} />
+                    <Bar dataKey="uploads" fill="#3b82f6" name="Image Uploads" />
+                </BarChart>
+            </ResponsiveContainer>
+        </div>
+    );
+    
+    const FileCard = ({ file }) => (
+        <div className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden transition-transform transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-900/50">
+            {file.isJson ? (
+                 <div className="h-48 flex flex-col items-center justify-center bg-gray-900 p-4">
+                    <PackageX className="w-16 h-16 text-gray-600 mb-2"/>
+                    <span className="text-sm font-mono text-gray-500">JSON Data</span>
+                 </div>
+            ) : (
+                <div className="h-48 bg-gray-900 flex items-center justify-center">
+                    <img src={file.url} alt={file.filename} className="object-cover w-full h-full" loading="lazy" />
+                </div>
+            )}
+            <div className="p-4">
+                <div className="flex items-center text-sm text-gray-400 mb-2">
+                    <ImageIcon className="w-4 h-4 mr-2" />
+                    <p className="font-mono truncate" title={file.filename}>{file.filename}</p>
+                </div>
+                <div className="flex items-center text-sm text-gray-400 mb-3">
+                    <Clock className="w-4 h-4 mr-2" />
+                    <p>{new Date(file.timestamp).toLocaleString()}</p>
+                </div>
+                <div className="flex justify-between items-center">
+                    <span className="text-xs font-mono px-2 py-1 bg-gray-700 rounded-md">{formatBytes(file.size)}</span>
+                    <a 
+                        href={file.url} 
+                        download={file.filename}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center px-3 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-500 transition-colors"
+                    >
+                        <Download className="w-4 h-4 mr-2" />
+                        Download
+                    </a>
+                </div>
+            </div>
+        </div>
+    );
+    
+    const renderContent = () => {
+        if (isLoading) {
+            return (
+                <div className="text-center text-gray-500 p-10">
+                    <Loader2 className="w-12 h-12 mx-auto animate-spin mb-4" />
+                    <p className="text-lg">Connecting to AWS S3 Bucket...</p>
+                </div>
+            );
+        }
+
+        if (error) {
+            return (
+                <div className="text-center text-red-400 p-10 bg-red-900/20 border border-red-800 rounded-lg">
+                    <WifiOff className="w-12 h-12 mx-auto mb-4" />
+                    <p className="text-lg font-semibold">Connection Failed</p>
+                    <p>{error}</p>
+                </div>
+            );
+        }
+        
+        if (files.length === 0) {
+            return (
+                <div className="text-center text-gray-500 p-10 border-2 border-dashed border-gray-700 rounded-lg">
+                    <HardDrive className="w-12 h-12 mx-auto mb-4" />
+                    <p className="text-lg font-semibold">S3 Bucket is Empty</p>
+                    <p>No files have been uploaded by your ESP32 yet.</p>
+                </div>
+            );
+        }
+
+        return (
+            <>
+                <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6 mb-8 text-center">
+                    <h2 className="text-3xl font-bold text-gray-100">Smart Insect Trap Dashboard</h2>
+                    <p className="text-gray-400 mt-2 max-w-3xl mx-auto">
+                        Welcome! This is your central hub for monitoring image uploads from your ESP32-powered insect trap. 
+                        From here, you can analyze pest activity by viewing the total number of captures, observing trends on the daily uploads chart, and filtering images by a specific date range.
+                    </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <StatCard title="Total Images Uploaded" value={imageCount} icon={<Camera className="w-8 h-8 text-blue-400" />} />
+                    <StatCard title="Total Files (incl. JSON)" value={files.length} icon={<HardDrive className="w-8 h-8 text-green-400" />} />
+                </div>
+                
+                <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6 mb-8">
+                    <h3 className="text-lg font-semibold mb-4 flex items-center">
+                        <BarChart2 className="w-5 h-5 mr-2 text-gray-300"/>
+                        Daily Uploads Activity
+                    </h3>
+                    {chartData.length > 0 ? <UploadsChart data={chartData} /> : <p className="text-gray-500 text-center py-10">No image data available to display chart.</p>}
+                </div>
+
+                <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6 mb-8">
+                    <h3 className="text-lg font-semibold mb-4 flex items-center">
+                        <Filter className="w-5 h-5 mr-2 text-gray-300"/>
+                        Filter by Date & Time
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
+                        <div>
+                            <label htmlFor="startDate" className="block text-sm font-medium text-gray-400 mb-1">Start Date & Time</label>
+                            <input 
+                                type="datetime-local" 
+                                id="startDate"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                className="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500" 
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="endDate" className="block text-sm font-medium text-gray-400 mb-1">End Date & Time</label>
+                            <input 
+                                type="datetime-local" 
+                                id="endDate"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                className="w-full bg-gray-700 border border-gray-600 rounded-md p-2 text-white focus:ring-blue-500 focus:border-blue-500" 
+                            />
+                        </div>
+                        <button 
+                            onClick={handleResetFilter}
+                            className="w-full lg:w-auto px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-500 transition-colors h-10"
+                        >
+                            Clear Filter
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <div 
+                        className="flex justify-between items-center cursor-pointer mb-4"
+                        onClick={() => setIsUploadsVisible(!isUploadsVisible)}
+                    >
+                        <h3 className="text-2xl font-bold text-gray-100">
+                            {startDate || endDate ? `Filtered Uploads` : 'All Uploads'} ({filteredFiles.length} items)
+                        </h3>
+                        <ChevronDown className={`w-6 h-6 text-gray-400 transition-transform ${isUploadsVisible ? 'rotate-180' : ''}`} />
+                    </div>
+
+                    {isUploadsVisible && (
+                        <>
+                            {filteredFiles.length > 0 ? (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
+                                    {filteredFiles.map(file => <FileCard key={file.filename} file={file} />)}
+                                </div>
+                            ) : (
+                                <div className="text-center text-gray-500 py-10 border-2 border-dashed border-gray-700 rounded-lg">
+                                    <p>No files found in the selected date range.</p>
+                                </div>
+                            )}
+                        </>
+                    )}
+                </div>
+            </>
+        );
+    }
+
+    return (
+        <div className="bg-gray-900 text-white min-h-screen font-sans">
+            <style>{`
+                @keyframes fade-in {
+                    from { opacity: 0; transform: translateY(-10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .animate-fade-in {
+                    animation: fade-in 0.3s ease-out;
+                }
+            `}</style>
+            <header className="bg-gray-900/80 backdrop-blur-sm border-b border-gray-700/50 p-4 sticky top-0 z-10">
+                <div className="max-w-7xl mx-auto flex items-center space-x-3">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS Logo" className="w-8 h-8"/>
+                    <div>
+                        <h1 className="text-xl font-bold text-gray-100">Insect Trap Study, IISc</h1>
+                        <p className="text-xs text-gray-400">Indian Institute of Science</p>
+                    </div>
+                </div>
+            </header>
+
+            <main className="p-4 md:p-8">
+                <div className="max-w-7xl mx-auto">
+                    {renderContent()}
+                </div>
+            </main>
+        </div>
+    );
+}
+
