@@ -1,305 +1,448 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>AWS S3 Bucket Viewer</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body {
-      background-color: #111827;
-      color: white;
-      font-family: sans-serif;
-      margin: 0;
-    }
-    header {
-      background-color: rgba(17,24,39,0.8);
-      backdrop-filter: blur(5px);
-      border-bottom: 1px solid #374151;
-      padding: 1rem;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    header .flex {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      max-width: 1200px;
-      margin: auto;
-    }
-    main {
-      padding: 1rem;
-      max-width: 1200px;
-      margin: auto;
-    }
-    @media (min-width: 768px) {
-      main { padding: 2rem; }
-    }
-    .stat-card {
-      background: #1f2937;
-      border: 1px solid #374151;
-      border-radius: 0.75rem;
-      padding: 1rem;
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
-    .grid {
-      display: grid;
-      gap: 1.5rem;
-    }
-    .grid-cols-1 { grid-template-columns: 1fr; }
-    .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
-    .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
-    @media (max-width: 767px) {
-      .grid-cols-2, .grid-cols-3 { grid-template-columns: 1fr; }
-    }
-    .card {
-      background: #1f2937;
-      border: 1px solid #374151;
-      border-radius: 0.75rem;
-      overflow: hidden;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-    }
-    .card img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      background: #111827;
-    }
-    .card-content {
-      padding: 1rem;
-    }
-    .date-filter {
-      display: grid;
-      gap: 1rem;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      align-items: end;
-    }
-    input[type="date"] {
-      background: #374151;
-      border: 1px solid #4b5563;
-      color: white;
-      padding: 0.5rem;
-      border-radius: 0.5rem;
-      width: 100%;
-    }
-    button {
-      background: #4b5563;
-      color: white;
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 0.5rem;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #6b7280;
-    }
-    .download-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.25rem;
-      background: #2563eb;
-      padding: 0.4rem 0.75rem;
-      border-radius: 0.5rem;
-      text-decoration: none;
-      color: white;
-      font-size: 0.875rem;
-      font-weight: bold;
-    }
-    .download-btn:hover {
-      background: #3b82f6;
-    }
-    .section {
-      background: #1f2937;
-      border: 1px solid #374151;
-      border-radius: 0.75rem;
-      padding: 1.5rem;
-      margin: 2rem 0;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhoomika R | Research Assistant</title>
+    <style>
+        /* Google Font Import */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        /* --- Global Styles --- */
+        :root {
+            --primary-color: #0077b6; /* A professional blue */
+            --dark-color: #2c3e50;
+            --light-color: #ffffff;
+            --grey-color: #f4f4f4;
+            --text-color: #333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.7;
+            background-color: var(--light-color);
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            overflow: hidden;
+            padding: 0 2rem;
+        }
+
+        h1, h2, h3 {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--primary-color);
+            display: inline-block;
+        }
+        
+        section {
+            padding: 4rem 0;
+        }
+
+        .section-title-wrapper {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        /* --- Navigation Bar --- */
+        .navbar {
+            background: var(--light-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            text-decoration: none;
+        }
+
+        .navbar ul {
+            display: flex;
+            list-style: none;
+        }
+
+        .navbar ul li {
+            margin-left: 20px;
+        }
+
+        .navbar ul li a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            color: var(--primary-color);
+        }
+
+        /* --- Header / Hero Section --- */
+        .header {
+            background-color: var(--grey-color);
+            text-align: center;
+            padding: 6rem 0;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+        }
+
+        .header .tagline {
+            font-size: 1.3rem;
+            margin-top: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        /* --- About Section --- */
+        #about p {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        /* --- Skills Section --- */
+        #skills {
+            background-color: var(--grey-color);
+        }
+
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            text-align: left;
+        }
+        
+        .skill-category {
+            background: var(--light-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        
+        .skill-category h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .skill-category p {
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        /* --- Projects & Experience --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--light-color);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        
+        .card h3 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Experience Card Specifics */
+        .experience-header {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+        .experience-header p {
+            font-weight: 600;
+        }
+        .experience-header .dates {
+            font-style: italic;
+            color: #666;
+        }
+
+        .card ul {
+            list-style-position: inside;
+            padding-left: 1rem;
+        }
+        
+        /* Project Card Specifics */
+        .technologies {
+            margin-top: 1rem;
+        }
+
+        .tech-tag {
+            display: inline-block;
+            background-color: var(--grey-color);
+            color: var(--dark-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 0.2rem;
+            font-weight: 600;
+        }
+        
+        /* --- Footer / Contact --- */
+        .footer {
+            background-color: var(--dark-color);
+            color: var(--light-color);
+            text-align: center;
+            padding: 3rem 0;
+        }
+        
+        .footer h2 {
+            color: var(--light-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .footer p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .contact-links a {
+            color: var(--light-color);
+            text-decoration: none;
+            font-weight: 600;
+            margin: 0 1rem;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .contact-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* --- Responsive Design --- */
+        @media(max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 1.8rem; }
+            
+            .navbar .container {
+                flex-direction: column;
+            }
+            .navbar ul {
+                padding-top: 1rem;
+            }
+
+            .experience-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+    </style>
 </head>
 <body>
 
-  <header>
-    <div class="flex">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="AWS Logo" width="32" height="32">
-      <div>
-        <h1 style="font-size:1.25rem;font-weight:bold;">AWS S3 Bucket Viewer</h1>
-        <p style="font-size:0.75rem;color:#9ca3af;">Connected to ESP32 Fleet</p>
-      </div>
-    </div>
-  </header>
-
-  <main>
-    <div id="content"></div>
-  </main>
-
-  <script>
-    const API_GATEWAY_ENDPOINT = "https://skxciixam6.execute-api.ap-south-1.amazonaws.com/prod/files";
-
-    const state = {
-      files: [],
-      loading: true,
-      error: null,
-      startDate: "",
-      endDate: ""
-    };
-
-    function formatBytes(bytes, decimals = 2) {
-      if (bytes === 0) return "0 Bytes";
-      const k = 1024;
-      const dm = decimals < 0 ? 0 : decimals;
-      const sizes = ["Bytes", "KB", "MB", "GB"];
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-    }
-
-    function render() {
-      const container = document.getElementById("content");
-      container.innerHTML = "";
-
-      if (state.loading) {
-        container.innerHTML = `<div style="text-align:center;padding:2rem;">Loading from AWS S3 Bucket...</div>`;
-        return;
-      }
-      if (state.error) {
-        container.innerHTML = `<div style="color:red;text-align:center;padding:2rem;">${state.error}</div>`;
-        return;
-      }
-      if (state.files.length === 0) {
-        container.innerHTML = `<div style="text-align:center;padding:2rem;border:2px dashed #374151;">S3 Bucket is Empty</div>`;
-        return;
-      }
-
-      const imageFiles = state.files.filter(f => !f.isJson);
-      const imageCount = imageFiles.length;
-
-      const stats = document.createElement("div");
-      stats.className = "grid grid-cols-1 md:grid-cols-2";
-      stats.innerHTML = `
-        <div class="stat-card"><div><p style="color:#9ca3af;font-size:0.875rem;">Total Images Uploaded</p><p style="font-size:1.5rem;font-weight:bold;">${imageCount}</p></div></div>
-        <div class="stat-card"><div><p style="color:#9ca3af;font-size:0.875rem;">Total Files (incl. JSON)</p><p style="font-size:1.5rem;font-weight:bold;">${state.files.length}</p></div></div>
-      `;
-      container.appendChild(stats);
-
-      const chartSection = document.createElement("div");
-      chartSection.className = "section";
-      chartSection.innerHTML = `<h3 style="margin-bottom:1rem;">Daily Uploads Activity</h3><canvas id="uploadsChart" height="200"></canvas>`;
-      container.appendChild(chartSection);
-
-      const uploadsByDate = {};
-      imageFiles.forEach(file => {
-        const date = new Date(file.timestamp).toLocaleDateString("en-CA");
-        uploadsByDate[date] = (uploadsByDate[date] || 0) + 1;
-      });
-      const labels = Object.keys(uploadsByDate).sort();
-      const data = labels.map(d => uploadsByDate[d]);
-
-      new Chart(document.getElementById("uploadsChart"), {
-        type: "bar",
-        data: {
-          labels,
-          datasets: [{
-            label: "Image Uploads",
-            data,
-            backgroundColor: "#3b82f6"
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: { legend: { labels: { color: "#9ca3af" } } },
-          scales: {
-            x: { ticks: { color: "#9ca3af" }, grid: { color: "#374151" } },
-            y: { ticks: { color: "#9ca3af" }, grid: { color: "#374151" } }
-          }
-        }
-      });
-
-      const filterSection = document.createElement("div");
-      filterSection.className = "section";
-      filterSection.innerHTML = `
-        <h3 style="margin-bottom:1rem;">Filter by Date Range</h3>
-        <div class="date-filter">
-          <div><label>Start Date</label><input type="date" id="startDate"></div>
-          <div><label>End Date</label><input type="date" id="endDate"></div>
-          <button id="clearFilter">Clear Filter</button>
+    <nav class="navbar">
+        <div class="container">
+            <a href="#home" class="logo">Bhoomika R</a>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
         </div>
-      `;
-      container.appendChild(filterSection);
+    </nav>
 
-      document.getElementById("startDate").value = state.startDate;
-      document.getElementById("endDate").value = state.endDate;
-      document.getElementById("startDate").onchange = e => { state.startDate = e.target.value; render(); };
-      document.getElementById("endDate").onchange = e => { state.endDate = e.target.value; render(); };
-      document.getElementById("clearFilter").onclick = () => { state.startDate = ""; state.endDate = ""; render(); };
+    <header class="header" id="home">
+        <div class="container">
+            <h1>Bhoomika R</h1>
+            <p class="tagline">A Research Assistant at the Indian Institute of Science (IISc), Bangalore.</p>
+        </div>
+    </header>
 
-      const filtered = state.files.filter(file => {
-        const fileDate = new Date(file.timestamp);
-        let start = state.startDate ? new Date(state.startDate) : null;
-        let end = state.endDate ? new Date(state.endDate) : null;
-        if (start) start.setHours(0,0,0,0);
-        if (end) end.setHours(23,59,59,999);
-        if (start && fileDate < start) return false;
-        if (end && fileDate > end) return false;
-        return true;
-      });
-
-      const filesGrid = document.createElement("div");
-      filesGrid.innerHTML = `<h3 style="margin:1rem 0;font-size:1.25rem;font-weight:bold;">Uploads (${filtered.length} items)</h3>`;
-      const grid = document.createElement("div");
-      grid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
-
-      if (filtered.length === 0) {
-        grid.innerHTML = `<div style="text-align:center;padding:2rem;border:2px dashed #374151;">No files found in the selected date range.</div>`;
-      } else {
-        filtered.forEach(file => {
-          const card = document.createElement("div");
-          card.className = "card";
-          card.innerHTML = `
-            ${file.isJson 
-              ? `<div style="height:200px;display:flex;align-items:center;justify-content:center;background:#111827;color:#9ca3af;">JSON Data</div>`
-              : `<img src="${file.url}" alt="${file.filename}">`
-            }
-            <div class="card-content">
-              <div style="color:#9ca3af;font-size:0.875rem;margin-bottom:0.5rem;">${file.filename}</div>
-              <div style="color:#9ca3af;font-size:0.875rem;margin-bottom:0.5rem;">${new Date(file.timestamp).toLocaleString()}</div>
-              <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
-                <span style="font-size:0.75rem;background:#374151;padding:0.25rem 0.5rem;border-radius:0.25rem;">${formatBytes(file.size)}</span>
-                <a href="${file.url}" download="${file.filename}" target="_blank" class="download-btn">Download</a>
-              </div>
+    <main>
+        <section id="about" class="container">
+            <div class="section-title-wrapper">
+                <h2>About Me</h2>
             </div>
-          `;
-          grid.appendChild(card);
-        });
-      }
+            <p>
+                A graduate of Medical Electronics Engineering from Ramaiah Institute of Technology, I am passionate about the intersection of hardware, software, and the medical domain. This passion led me to an internship and now a full-time role as a Research Assistant at the Indian Institute of Science. My work focuses on embedded systems, where I have hands-on experience with microcontrollers like the STM32 series (ARM Cortex-M7), ESP32, and Seeed Xiao using development tools like STM32 Cube IDE and CubeMX.
+            </p>
+        </section>
 
-      filesGrid.appendChild(grid);
-      container.appendChild(filesGrid);
-    }
+        <section id="skills">
+            <div class="container">
+                <div class="section-title-wrapper">
+                    <h2>Skills</h2>
+                </div>
+                <div class="skills-container">
+                    <div class="skill-category">
+                        <h3>Areas</h3>
+                        <p>Computer Vision, IoT, Embedded Systems</p>
+                    </div>
+                    <div class="skill-category">
+                        <h3>Programming Languages</h3>
+                        <p>Python, C/C++</p>
+                    </div>
+                    <div class="skill-category">
+                        <h3>Frameworks & Tools</h3>
+                        <p>PyTorch, TensorFlow, Git, MATLAB</p>
+                    </div>
+                    <div class="skill-category">
+                        <h3>Hardware Experience</h3>
+                        <p>Arduino, STM-32 (ARM M4 & M7), ESP32-S3-EYE, ESP32, LilyGo SIM7600E, Seeed Xiao</p>
+                    </div>
+                    <div class="skill-category">
+                        <h3>Software Development</h3>
+                        <p>STM32CubeIDE, STMCubeMX, Arduino IDE</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    async function fetchFiles() {
-      state.loading = true;
-      render();
-      try {
-        await new Promise(r => setTimeout(r, 1000));
-        const res = await fetch(API_GATEWAY_ENDPOINT);
-        if (!res.ok) throw new Error("Failed to fetch data");
-        state.files = await res.json();
-      } catch (err) {
-        state.error = err.message;
-      } finally {
-        state.loading = false;
-        render();
-      }
-    }
+        <section id="projects" class="container">
+            <div class="section-title-wrapper">
+                <h2>Projects</h2>
+            </div>
+            <div class="grid-container">
+                <article class="card">
+                    <h3>Neuro-Controlled Prosthetic Arm</h3>
+                    <p>Engineered a prosthetic arm controlled directly by EEG (brainwave) signals. This project utilized a Random Forest machine learning classifier to achieve 87% grasp detection accuracy. The model was integrated with an Arduino-based embedded system to actuate servo motors in real time, achieving an average response latency of ~250ms from signal to action. The system was validated as a low-cost, portable assistive technology prototype.</p>
+                    <div class="technologies">
+                        <span class="tech-tag">Machine Learning</span>
+                        <span class="tech-tag">EEG Signal Processing</span>
+                        <span class="tech-tag">Arduino</span>
+                        <span class="tech-tag">Servo Motors</span>
+                        <span class="tech-tag">Embedded C/C++</span>
+                    </div>
+                </article>
+                <article class="card">
+                    <h3>Wearable Device for Respiratory Assessment</h3>
+                    <p>Designed a wearable respiratory monitoring device using a 3-pin NTC thermistor to enable temperature-based breath detection. The system implements data acquisition and real-time waveform analysis to calculate breaths per minute (BPM). Over-the-Air (OTA) update capabilities were integrated on the ESP32 to ensure flexible deployment for remote healthcare monitoring.</p>
+                    <div class="technologies">
+                        <span class="tech-tag">ESP32</span>
+                        <span class="tech-tag">Arduino</span>
+                        <span class="tech-tag">NTC Thermistor</span>
+                        <span class="tech-tag">OTA Updates</span>
+                        <span class="tech-tag">Real-time Data Processing</span>
+                    </div>
+                </article>
+                <article class="card">
+                    <h3>Over-The-Air Communication with ESP32-S3 Eye</h3>
+                    <p>Developed an IoT system using the ESP32-S3 Eye for wireless data transmission and remote monitoring. The project enabled remote device control and real-time data analysis through mobile integration, demonstrating practical expertise in IoT communication protocols and Over-the-Air (OTA) data management.</p>
+                    <div class="technologies">
+                        <span class="tech-tag">ESP32-S3 Eye</span>
+                        <span class="tech-tag">IoT Protocols</span>
+                        <span class="tech-tag">OTA Updates</span>
+                        <span class="tech-tag">Mobile Integration</span>
+                    </div>
+                </article>
+            </div>
+        </section>
+        
+        <section id="experience" class="container" style="background-color: var(--grey-color); padding: 4rem 2rem;">
+            <div class="section-title-wrapper">
+                <h2>Experience</h2>
+            </div>
+            <div class="grid-container">
+                <article class="card">
+                    <div class="experience-header">
+                        <p>Research Assistant @ Indian Institute of Science (IISc)</p>
+                        <p class="dates">July 2025 – Present</p>
+                    </div>
+                    <ul>
+                        <li>Researched Neuromorphic/Event cameras, evaluating clustering algorithms for event-based vision tasks on embedded systems.</li>
+                        <li>Optimized clustering algorithms on ARM Cortex-M4 and M7 boards using STM32CubeIDE (C/C++), improving execution efficiency, latency, and cycle life for real-time deployment.</li>
+                        <li>Initiated an insect monitoring project, developing a basic machine learning pipeline on embedded platforms for insect detection with emphasis on resource-efficient edge computation.</li>
+                    </ul>
+                </article>
+                <article class="card">
+                    <div class="experience-header">
+                        <p>Research Intern @ Indian Institute of Science (IISc)</p>
+                        <p class="dates">April 2024 – September 2025</p>
+                    </div>
+                    <ul>
+                        <li>Conducted research on insect monitoring using a TinyML approach in collaboration with Western Sydney University (WSU), Australia.</li>
+                        <li>Built an IoT-based insect monitoring system using an Arducam Mega 5MP camera and a LilyGo SIM7600E (4G module) to capture and transfer images in real time.</li>
+                        <li>Deployed a local Flask server for remote image visualization and integrated object detection models to automatically identify insects.</li>
+                    </ul>
+                </article>
+                <article class="card">
+                    <div class="experience-header">
+                        <p>Clinical Intern @ Ramaiah Memorial Hospital</p>
+                        <p class="dates">February 2024 – March 2024</p>
+                    </div>
+                    <ul>
+                        <li>Gained hands-on exposure to medical equipment operation and maintenance, including X-Ray, MRI, CT, and Ultrasound systems.</li>
+                        <li>Acquired practical understanding of healthcare technology integration and real-world biomedical applications in a hospital setting.</li>
+                    </ul>
+                </article>
+                <article class="card">
+                    <div class="experience-header">
+                        <p>Research Intern (IEEE Project) @ Ramaiah Institute of Technology</p>
+                        <p class="dates">September 2023 – May 2024</p>
+                    </div>
+                    <ul>
+                        <li>Worked on Asphyxia detection using AI and Machine Learning, focusing on automated classification of neonatal cry signals.</li>
+                        <li>Implemented an encoder–decoder architecture, achieving 82% accuracy in distinguishing between asphyxiated and non-asphyxiated cry signals.</li>
+                        <li>Utilized MATLAB for visualization and spectrogram-based analysis, enabling detailed feature extraction for model development.</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+    </main>
 
-    fetchFiles();
-  </script>
+    <footer class="footer" id="contact">
+        <div class="container">
+            <div class="section-title-wrapper">
+                <h2>Contact Me</h2>
+            </div>
+            <p>Feel free to reach out. I'm always open to new opportunities and collaborations.</p>
+            <div class="contact-links">
+                <a href="mailto:bhoomikar@iisc.ac.in">Email</a>
+                <a href="https://www.linkedin.com/in/bhoomika1203/" target="_blank">LinkedIn</a>
+                <a href="https://github.com/bhoomika1203" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
 </body>
 </html>
