@@ -175,18 +175,21 @@
             border-radius: 8px;
             padding: 2rem;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            /* --- ANIMATION --- Added smooth transition */
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         
+        /* --- ANIMATION --- This is the new hover effect */
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            transform: translateY(-10px); /* Lifts the card up more */
+            box-shadow: 0 12px 20px rgba(0,0,0,0.12); /* Stronger shadow */
         }
         
         .card h3 {
             font-size: 1.5rem;
             color: var(--primary-color);
             margin-bottom: 0.5rem;
+            position: relative; /* Needed for the icon animation */
         }
         
         /* Experience Card Specifics */
@@ -255,6 +258,27 @@
         .contact-links a:hover {
             color: var(--primary-color);
         }
+        
+        /* --- ANIMATION --- Keyframe for the icon pop-in */
+        @keyframes popIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to   { transform: scale(1); opacity: 1; }
+        }
+
+        /* --- ANIMATION --- Icon for Project cards */
+        .project-card:hover h3::after {
+            content: ' 🚀'; /* Rocket emoji */
+            display: inline-block;
+            animation: popIn 0.3s ease forwards;
+        }
+        
+        /* --- ANIMATION --- Icon for Experience cards */
+        .experience-card:hover h3::after {
+            content: ' 💼'; /* Briefcase emoji */
+            display: inline-block;
+            animation: popIn 0.3s ease forwards;
+        }
+
 
         /* --- Responsive Design --- */
         @media(max-width: 768px) {
@@ -343,7 +367,7 @@
                 <h2>Projects</h2>
             </div>
             <div class="grid-container">
-                <article class="card">
+                <article class="card project-card">
                     <h3>Neuro-Controlled Prosthetic Arm</h3>
                     <p>Engineered a prosthetic arm controlled directly by EEG (brainwave) signals. This project utilized a Random Forest machine learning classifier to achieve 87% grasp detection accuracy. The model was integrated with an Arduino-based embedded system to actuate servo motors in real time, achieving an average response latency of ~250ms from signal to action. The system was validated as a low-cost, portable assistive technology prototype.</p>
                     <div class="technologies">
@@ -354,7 +378,7 @@
                         <span class="tech-tag">Embedded C/C++</span>
                     </div>
                 </article>
-                <article class="card">
+                <article class="card project-card">
                     <h3>Wearable Device for Respiratory Assessment</h3>
                     <p>Designed a wearable respiratory monitoring device using a 3-pin NTC thermistor to enable temperature-based breath detection. The system implements data acquisition and real-time waveform analysis to calculate breaths per minute (BPM). Over-the-Air (OTA) update capabilities were integrated on the ESP32 to ensure flexible deployment for remote healthcare monitoring.</p>
                     <div class="technologies">
@@ -365,7 +389,7 @@
                         <span class="tech-tag">Real-time Data Processing</span>
                     </div>
                 </article>
-                <article class="card">
+                <article class="card project-card">
                     <h3>Over-The-Air Communication with ESP32-S3 Eye</h3>
                     <p>Developed an IoT system using the ESP32-S3 Eye for wireless data transmission and remote monitoring. The project enabled remote device control and real-time data analysis through mobile integration, demonstrating practical expertise in IoT communication protocols and Over-the-Air (OTA) data management.</p>
                     <div class="technologies">
@@ -383,7 +407,7 @@
                 <h2>Experience</h2>
             </div>
             <div class="grid-container">
-                <article class="card">
+                <article class="card experience-card">
                     <div class="experience-header">
                         <p>Research Assistant @ Indian Institute of Science (IISc)</p>
                         <p class="dates">July 2025 – Present</p>
@@ -394,7 +418,7 @@
                         <li>Initiated an insect monitoring project, developing a basic machine learning pipeline on embedded platforms for insect detection with emphasis on resource-efficient edge computation.</li>
                     </ul>
                 </article>
-                <article class="card">
+                <article class="card experience-card">
                     <div class="experience-header">
                         <p>Research Intern @ Indian Institute of Science (IISc)</p>
                         <p class="dates">April 2024 – September 2025</p>
@@ -405,7 +429,7 @@
                         <li>Deployed a local Flask server for remote image visualization and integrated object detection models to automatically identify insects.</li>
                     </ul>
                 </article>
-                <article class="card">
+                <article class="card experience-card">
                     <div class="experience-header">
                         <p>Clinical Intern @ Ramaiah Memorial Hospital</p>
                         <p class="dates">February 2024 – March 2024</p>
@@ -415,7 +439,7 @@
                         <li>Acquired practical understanding of healthcare technology integration and real-world biomedical applications in a hospital setting.</li>
                     </ul>
                 </article>
-                <article class="card">
+                <article class="card experience-card">
                     <div class="experience-header">
                         <p>Research Intern (IEEE Project) @ Ramaiah Institute of Technology</p>
                         <p class="dates">September 2023 – May 2024</p>
