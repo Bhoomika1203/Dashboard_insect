@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bhoomika R | Research Assistant</title>
     <style>
-        /* Google Font Import */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
-        /* --- Global Styles --- */
         :root {
-            --primary-color: #0093E9; /* --- NEW COLOR --- A brighter, more modern blue */
-            --dark-color: #2c3e50;
-            --light-color: #ffffff;
-            --grey-color: #f4f4f4;
-            --text-color: #333;
+            --primary: #0093E9;
+            --secondary: #667eea;
+            --accent: #764ba2;
+            --dark: #2c3e50;
+            --light: #ffffff;
+            --grey: #f4f4f4;
+            --text: #333;
+            --card-hover: #f8f9fa;
         }
 
         * {
@@ -30,8 +31,8 @@
         body {
             font-family: 'Poppins', sans-serif;
             line-height: 1.7;
-            background-color: var(--light-color);
-            color: var(--text-color);
+            background: var(--light);
+            color: var(--text);
         }
 
         .container {
@@ -43,7 +44,7 @@
 
         h1, h2, h3 {
             font-weight: 600;
-            color: var(--dark-color);
+            color: var(--dark);
         }
 
         h2 {
@@ -51,8 +52,8 @@
             text-align: center;
             margin-bottom: 2rem;
             padding-bottom: 0.5rem;
-            color: var(--dark-color); /* Titles on white sections are dark */
-            border-bottom: 3px solid var(--primary-color);
+            color: var(--dark);
+            border-bottom: 3px solid var(--primary);
             display: inline-block;
         }
         
@@ -65,15 +66,15 @@
             margin-bottom: 3rem;
         }
         
-        /* --- Navigation Bar --- */
         .navbar {
-            background: var(--light-color);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
             padding: 1rem 0;
             position: sticky;
             top: 0;
             width: 100%;
             z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         }
         
         .navbar .container {
@@ -85,7 +86,10 @@
         .navbar .logo {
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--dark-color);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-decoration: none;
         }
 
@@ -100,35 +104,91 @@
 
         .navbar ul li a {
             text-decoration: none;
-            color: var(--dark-color);
+            color: var(--dark);
             font-weight: 600;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .navbar ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
         }
 
         .navbar ul li a:hover {
-            color: var(--primary-color);
+            color: var(--primary);
         }
 
-        /* --- NEW COLOR --- Header / Hero Section Gradient */
+        .navbar ul li a:hover::after {
+            width: 100%;
+        }
+
         .header {
-            background: linear-gradient(45deg, var(--primary-color) 0%, var(--dark-color) 100%);
-            color: var(--light-color); /* Text on gradient must be white */
+            background: linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.5)), 
+                        url('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Indian_Institute_of_Science%2C_Bangalore_-_Main_Building.jpg/1280px-Indian_Institute_of_Science%2C_Bangalore_-_Main_Building.jpg');
+            background-size: cover;
+            background-position: center;
+            color: var(--dark);
             text-align: center;
-            padding: 6rem 0;
+            padding: 8rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.15);
+            z-index: 1;
+        }
+
+        @keyframes moveGrid {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
         }
 
         .header h1 {
             font-size: 3.5rem;
-            color: var(--light-color);
+            color: var(--dark);
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 1s ease;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
+            font-weight: 700;
         }
 
         .header .tagline {
             font-size: 1.3rem;
             margin-top: 0.5rem;
-            color: var(--light-color);
+            color: var(--dark);
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 1s ease 0.2s backwards;
+            text-shadow: 1px 1px 3px rgba(255,255,255,0.8);
+            font-weight: 500;
         }
 
-        /* --- About Section (Stays White) --- */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         #about p {
             max-width: 800px;
             margin: 0 auto;
@@ -136,120 +196,190 @@
             font-size: 1.1rem;
         }
         
-        /* --- NEW COLOR --- Dark Section Styling (for Skills, Experience, Footer) */
-        .dark-section {
-            background-color: var(--dark-color);
-            color: var(--light-color);
-        }
-
-        .dark-section h2 {
-            color: var(--light-color); /* Titles on dark sections are white */
-            border-bottom-color: var(--primary-color);
-        }
-
-        /* --- Skills Section --- */
         .skills-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
             text-align: left;
         }
         
-        /* Cards in the Skills section */
-        .dark-section .skill-category {
-            background: #3b5063; /* A slightly lighter dark-blue */
-            color: var(--light-color);
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        .skill-category {
+            background: var(--light);
+            color: var(--text);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-category::after {
+            position: absolute;
+            right: 15px;
+            bottom: 15px;
+            font-size: 60px;
+            opacity: 0.06;
+            pointer-events: none;
             transition: all 0.3s ease;
         }
 
-        /* --- NEW ANIMATION --- Skill card hover */
-        .dark-section .skill-category:hover {
-            background: var(--light-color);
-            color: var(--dark-color);
-            transform: translateY(-5px);
+        .skill-category:nth-child(1)::after { content: '💡'; }
+        .skill-category:nth-child(2)::after { content: '💻'; }
+        .skill-category:nth-child(3)::after { content: '🔧'; }
+        .skill-category:nth-child(4)::after { content: '⚙️'; }
+        .skill-category:nth-child(5)::after { content: '🚀'; }
+
+        .skill-category:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+            border-left-width: 6px;
+        }
+
+        .skill-category:hover::after {
+            opacity: 0.15;
+            transform: scale(1.2) rotate(10deg);
+            animation: wiggle 0.5s ease;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: scale(1.2) rotate(10deg); }
+            25% { transform: scale(1.2) rotate(-5deg); }
+            75% { transform: scale(1.2) rotate(15deg); }
         }
         
         .skill-category h3 {
             margin-bottom: 1rem;
-            color: var(--primary-color);
+            color: var(--primary);
+            font-size: 1.3rem;
         }
         
-        /* --- Projects & Experience --- */
         .grid-container {
             display: grid;
             grid-template-columns: 1fr;
             gap: 2rem;
         }
 
-        /* --- Card Styling for WHITE sections (Projects) --- */
         .card {
-            background: var(--light-color);
-            border: 1px solid #ddd;
-            border-left: 6px solid var(--primary-color);
-            border-radius: 8px;
+            background: var(--light);
+            border-radius: 15px;
             padding: 2rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            transition: all 0.3s ease-in-out;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid #e9ecef;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,147,233,0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .card:hover::before {
+            left: 100%;
         }
         
         .card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 12px 20px rgba(0,0,0,0.12);
-            border-left-color: var(--dark-color);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            border-color: var(--primary);
+            background: var(--card-hover);
         }
         
         .card h3 {
             font-size: 1.5rem;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
             position: relative;
             transition: color 0.3s ease;
         }
-        
-        .card:hover h3 {
-            color: var(--dark-color);
-        }
-        
-        /* --- Card Styling for DARK sections (Experience) --- */
-        .dark-section .card {
-            background: #3b5063; /* Slightly lighter dark-blue */
-            border-left: 6px solid var(--primary-color);
+
+        .project-card:nth-child(1):hover::after {
+            content: '🦾';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 120px;
+            opacity: 0.15;
+            pointer-events: none;
+            animation: floatIcon 3s ease-in-out infinite;
         }
 
-        .dark-section .card h3 {
-            color: var(--light-color);
+        .project-card:nth-child(2):hover::after {
+            content: '🫁';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 120px;
+            opacity: 0.15;
+            pointer-events: none;
+            animation: floatIcon 3s ease-in-out infinite;
         }
 
-        /* --- NEW ANIMATION --- Card hover on DARK sections */
-        .dark-section .card:hover {
-            background: var(--light-color); /* Glows white on hover */
-            color: var(--dark-color);
-            border-left-color: var(--dark-color);
+        .project-card:nth-child(3):hover::after {
+            content: '📡';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 120px;
+            opacity: 0.15;
+            pointer-events: none;
+            animation: floatIcon 3s ease-in-out infinite;
         }
 
-        .dark-section .card:hover h3 {
-            color: var(--primary-color);
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(-50%) translateX(0); }
+            50% { transform: translateY(-50%) translateX(-10px); }
+        }
+
+        .experience-card {
+            background: linear-gradient(135deg, #e8f4f8 0%, #d4e9f7 100%);
+            color: var(--text);
+            border-color: var(--primary);
+        }
+
+        .experience-card:hover {
+            background: linear-gradient(135deg, #d4e9f7 0%, #c8e3f5 100%);
+            border-color: var(--secondary);
+        }
+
+        .experience-card h3 {
+            color: var(--primary);
+        }
+
+        .experience-card:hover h3 {
+            color: var(--secondary);
+        }
+
+        .experience-card .dates {
+            color: #666;
         }
         
-        /* --- Experience Card Specifics --- */
         .experience-header {
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
         }
+
         .experience-header p {
             font-weight: 600;
         }
+
         .experience-header .dates {
             font-style: italic;
-            color: #aaa; /* Lighter grey for dark mode */
-        }
-        .dark-section .card:hover .dates {
-            color: #666; /* Darker grey when card is white */
+            opacity: 0.7;
         }
 
         .card ul {
@@ -257,22 +387,38 @@
             padding-left: 1rem;
         }
         
-        /* --- NEW COLOR --- Colorful Tech Tags */
         .tech-tag {
             display: inline-block;
-            background-color: var(--primary-color); /* Was grey */
-            color: var(--light-color); /* Was dark */
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            margin: 0.2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--light);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            margin: 0.3rem;
             font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .technologies {
+            margin-top: 1.5rem;
+        }
+
+        .tech-tag:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,147,233,0.4);
         }
         
-        /* --- Footer / Contact --- */
         .footer {
             text-align: center;
             padding: 3rem 0;
+            background: linear-gradient(135deg, var(--dark) 0%, #34495e 100%);
+            color: var(--light);
+        }
+
+        .footer h2 {
+            color: var(--light);
+            border-bottom-color: var(--primary);
         }
 
         .footer p {
@@ -281,40 +427,62 @@
         }
 
         .contact-links a {
-            color: var(--light-color);
+            color: var(--light);
             text-decoration: none;
             font-weight: 600;
             margin: 0 1rem;
             font-size: 1.1rem;
-            transition: color 0.3s ease;
+            padding: 0.8rem 1.8rem;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid var(--primary);
         }
 
         .contact-links a:hover {
-            color: var(--primary-color);
+            background: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,147,233,0.4);
         }
         
-        /* --- ANIMATION --- Keyframe for the icon pop-in */
         @keyframes popIn {
             from { transform: scale(0.5); opacity: 0; }
-            to   { transform: scale(1); opacity: 1; }
+            to { transform: scale(1); opacity: 1; }
         }
 
-        /* --- ANIMATION --- Icon for Project cards */
-        .project-card:hover h3::after {
-            content: ' 🚀'; /* Rocket emoji */
+        .project-card:hover h3::before {
+            content: '🚀 ';
             display: inline-block;
             animation: popIn 0.3s ease forwards;
         }
         
-        /* --- ANIMATION --- Icon for Experience cards */
-        .experience-card:hover h3::after {
-            content: ' 💼'; /* Briefcase emoji */
+        .experience-card:hover h3::before {
+            content: '💼 ';
             display: inline-block;
             animation: popIn 0.3s ease forwards;
         }
 
+        .experience-card::after {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            font-size: 80px;
+            opacity: 0.08;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
 
-        /* --- Responsive Design --- */
+        .experience-card:nth-child(1)::after { content: '🔬'; }
+        .experience-card:nth-child(2)::after { content: '🤖'; }
+        .experience-card:nth-child(3)::after { content: '🏥'; }
+        .experience-card:nth-child(4)::after { content: '🧠'; }
+
+        .experience-card:hover::after {
+            opacity: 0.15;
+            transform: scale(1.1) rotate(-5deg);
+        }
+
         @media(max-width: 768px) {
             h1 { font-size: 2.5rem; }
             h2 { font-size: 1.8rem; }
@@ -322,6 +490,7 @@
             .navbar .container {
                 flex-direction: column;
             }
+            
             .navbar ul {
                 padding-top: 1rem;
             }
@@ -329,6 +498,18 @@
             .experience-header {
                 flex-direction: column;
                 align-items: flex-start;
+            }
+
+            .contact-links a {
+                display: block;
+                margin: 0.5rem 0;
+            }
+
+            .project-card:nth-child(1):hover::after,
+            .project-card:nth-child(2):hover::after,
+            .project-card:nth-child(3):hover::after {
+                font-size: 80px;
+                right: 10px;
             }
         }
     </style>
@@ -351,7 +532,7 @@
     <header class="header" id="home">
         <div class="container">
             <h1>Bhoomika R</h1>
-            <p class="tagline">A Research Assistant at the Indian Institute of Science (IISc), Bangalore.</p>
+            <p class="tagline">Research Assistant at the Indian Institute of Science (IISc), Bangalore.</p>
         </div>
     </header>
 
@@ -365,32 +546,30 @@
             </p>
         </section>
 
-        <section id="skills" class="dark-section">
-            <div class="container">
-                <div class="section-title-wrapper">
-                    <h2>Skills</h2>
+        <section id="skills" class="container">
+            <div class="section-title-wrapper">
+                <h2>Skills</h2>
+            </div>
+            <div class="skills-container">
+                <div class="skill-category">
+                    <h3>Areas</h3>
+                    <p>Computer Vision, IoT, Embedded Systems</p>
                 </div>
-                <div class="skills-container">
-                    <div class="skill-category">
-                        <h3>Areas</h3>
-                        <p>Computer Vision, IoT, Embedded Systems</p>
-                    </div>
-                    <div class="skill-category">
-                        <h3>Programming Languages</h3>
-                        <p>Python, C/C++</p>
-                    </div>
-                    <div class="skill-category">
-                        <h3>Frameworks & Tools</h3>
-                        <p>PyTorch, TensorFlow, Git, MATLAB</p>
-                    </div>
-                    <div class="skill-category">
-                        <h3>Hardware Experience</h3>
-                        <p>Arduino, STM-32 (ARM M4 & M7), ESP32-S3-EYE, ESP32, LilyGo SIM7600E, Seeed Xiao</p>
-                    </div>
-                    <div class="skill-category">
-                        <h3>Software Development</h3>
-                        <p>STM32CubeIDE, STMCubeMX, Arduino IDE</p>
-                    </div>
+                <div class="skill-category">
+                    <h3>Programming Languages</h3>
+                    <p>Python, C/C++</p>
+                </div>
+                <div class="skill-category">
+                    <h3>Frameworks & Tools</h3>
+                    <p>PyTorch, TensorFlow, Git, MATLAB</p>
+                </div>
+                <div class="skill-category">
+                    <h3>Hardware Experience</h3>
+                    <p>Arduino, STM-32 (ARM M4 & M7), ESP32-S3-EYE, ESP32, LilyGo SIM7600E, Seeed Xiao</p>
+                </div>
+                <div class="skill-category">
+                    <h3>Software Development</h3>
+                    <p>STM32CubeIDE, STMCubeMX, Arduino IDE</p>
                 </div>
             </div>
         </section>
@@ -402,8 +581,7 @@
             <div class="grid-container">
                 <article class="card project-card">
                     <h3>Neuro-Controlled Prosthetic Arm</h3>
-                    <p>Engineered a prosthetic arm controlled directly by EEG (brainwave) signals. This project utilized a Random Forest machine learning classifier to achieve 87% grasp detection accuracy. The model was integrated with an Arduino-based embedded system to actuate servo motors in real time,
-                        achieving an average response latency of ~250ms from signal to action. The system was validated as a low-cost, portable assistive technology prototype.</p>
+                    <p>Engineered a prosthetic arm controlled directly by EEG (brainwave) signals. This project utilized a Random Forest machine learning classifier to achieve 87% grasp detection accuracy. The model was integrated with an Arduino-based embedded system to actuate servo motors in real time, achieving an average response latency of ~250ms from signal to action. The system was validated as a low-cost, portable assistive technology prototype.</p>
                     <div class="technologies">
                         <span class="tech-tag">Machine Learning</span>
                         <span class="tech-tag">EEG Signal Processing</span>
@@ -414,8 +592,7 @@
                 </article>
                 <article class="card project-card">
                     <h3>Wearable Device for Respiratory Assessment</h3>
-                    <p>Designed a wearable respiratory monitoring device using a 3-pin NTC thermistor to enable temperature-based breath detection. The system implements data acquisition and real-time waveform analysis to calculate breaths per minute (BPM). Over-the-Air (OTA) update capabilities were integrated
-                        on the ESP32 to ensure flexible deployment for remote healthcare monitoring.</p>
+                    <p>Designed a wearable respiratory monitoring device using a 3-pin NTC thermistor to enable temperature-based breath detection. The system implements data acquisition and real-time waveform analysis to calculate breaths per minute (BPM). Over-the-Air (OTA) update capabilities were integrated on the ESP32 to ensure flexible deployment for remote healthcare monitoring.</p>
                     <div class="technologies">
                         <span class="tech-tag">ESP32</span>
                         <span class="tech-tag">Arduino</span>
@@ -426,8 +603,7 @@
                 </article>
                 <article class="card project-card">
                     <h3>Over-The-Air Communication with ESP32-S3 Eye</h3>
-                    <p>Developed an IoT system using the ESP32-S3 Eye for wireless data transmission and remote monitoring. The project enabled remote device control and real-time data analysis through mobile integration, demonstrating practical expertise in IoT communication protocols and Over-the-Air (OTA) data
-                        management.</p>
+                    <p>Developed an IoT system using the ESP32-S3 Eye for wireless data transmission and remote monitoring. The project enabled remote device control and real-time data analysis through mobile integration, demonstrating practical expertise in IoT communication protocols and Over-the-Air (OTA) data management.</p>
                     <div class="technologies">
                         <span class="tech-tag">ESP32-S3 Eye</span>
                         <span class="tech-tag">IoT Protocols</span>
@@ -438,61 +614,59 @@
             </div>
         </section>
         
-        <section id="experience" class="dark-section">
-            <div class="container">
-                <div class="section-title-wrapper">
-                    <h2>Experience</h2>
-                </div>
-                <div class="grid-container">
-                    <article class="card experience-card">
-                        <div class="experience-header">
-                            <p>Research Assistant @ Indian Institute of Science (IISc)</p>
-                            <p class="dates">July 2025 – Present</p>
-                        </div>
-                        <ul>
-                            <li>Researched Neuromorphic/Event cameras, evaluating clustering algorithms for event-based vision tasks on embedded systems.</li>
-                            <li>Optimized clustering algorithms on ARM Cortex-M4 and M7 boards using STM32CubeIDE (C/C++), improving execution efficiency, latency, and cycle life for real-time deployment.</li>
-                            <li>Initiated an insect monitoring project, developing a basic machine learning pipeline on embedded platforms for insect detection with emphasis on resource-efficient edge computation.</li>
-                        </ul>
-                    </article>
-                    <article class="card experience-card">
-                        <div class="experience-header">
-                            <p>Research Intern @ Indian Institute of Science (IISc)</p>
-                            <p class="dates">April 2024 – September 2025</p>
-                        </div>
-                        <ul>
-                            <li>Conducted research on insect monitoring using a TinyML approach in collaboration with Western Sydney University (WSU), Australia.</li>
-                            <li>Built an IoT-based insect monitoring system using an Arducam Mega 5MP camera and a LilyGo SIM7600E (4G module) to capture and transfer images in real time.</li>
-                            <li>Deployed a local Flask server for remote image visualization and integrated object detection models to automatically identify insects.</li>
-                        </ul>
-                    </article>
-                    <article class="card experience-card">
-                        <div class="experience-header">
-                            <p>Clinical Intern @ Ramaiah Memorial Hospital</p>
-                            <p class="dates">February 2024 – March 2024</p>
-                        </div>
-                        <ul>
-                            <li>Gained hands-on exposure to medical equipment operation and maintenance, including X-Ray, MRI, CT, and Ultrasound systems.</li>
-                            <li>Acquired practical understanding of healthcare technology integration and real-world biomedical applications in a hospital setting.</li>
-                        </ul>
-                    </article>
-                    <article class="card experience-card">
-                        <div class="experience-header">
-                            <p>Research Intern (IEEE Project) @ Ramaiah Institute of Technology</p>
-                            <p class="dates">September 2023 – May 2024</p>
-                        </div>
-                        <ul>
-                            <li>Worked on Asphyxia detection using AI and Machine Learning, focusing on automated classification of neonatal cry signals.</li>
-                            <li>Implemented an encoder–decoder architecture, achieving 82% accuracy in distinguishing between asphyxiated and non-asphyxiated cry signals.</li>
-                            <li>Utilized MATLAB for visualization and spectrogram-based analysis, enabling detailed feature extraction for model development.</li>
-                        </ul>
-                    </article>
-                </div>
+        <section id="experience" class="container">
+            <div class="section-title-wrapper">
+                <h2>Experience</h2>
+            </div>
+            <div class="grid-container">
+                <article class="card experience-card">
+                    <div class="experience-header">
+                        <p>Research Assistant @ Indian Institute of Science (IISc)</p>
+                        <p class="dates">July 2025 – Present</p>
+                    </div>
+                    <ul>
+                        <li>Researched Neuromorphic/Event cameras, evaluating clustering algorithms for event-based vision tasks on embedded systems.</li>
+                        <li>Optimized clustering algorithms on ARM Cortex-M4 and M7 boards using STM32CubeIDE (C/C++), improving execution efficiency, latency, and cycle life for real-time deployment.</li>
+                        <li>Initiated an insect monitoring project, developing a basic machine learning pipeline on embedded platforms for insect detection with emphasis on resource-efficient edge computation.</li>
+                    </ul>
+                </article>
+                <article class="card experience-card">
+                    <div class="experience-header">
+                        <p>Research Intern @ Indian Institute of Science (IISc)</p>
+                        <p class="dates">April 2024 – September 2025</p>
+                    </div>
+                    <ul>
+                        <li>Conducted research on insect monitoring using a TinyML approach in collaboration with Western Sydney University (WSU), Australia.</li>
+                        <li>Built an IoT-based insect monitoring system using an Arducam Mega 5MP camera and a LilyGo SIM7600E (4G module) to capture and transfer images in real time.</li>
+                        <li>Deployed a local Flask server for remote image visualization and integrated object detection models to automatically identify insects.</li>
+                    </ul>
+                </article>
+                <article class="card experience-card">
+                    <div class="experience-header">
+                        <p>Clinical Intern @ Ramaiah Memorial Hospital</p>
+                        <p class="dates">February 2024 – March 2024</p>
+                    </div>
+                    <ul>
+                        <li>Gained hands-on exposure to medical equipment operation and maintenance, including X-Ray, MRI, CT, and Ultrasound systems.</li>
+                        <li>Acquired practical understanding of healthcare technology integration and real-world biomedical applications in a hospital setting.</li>
+                    </ul>
+                </article>
+                <article class="card experience-card">
+                    <div class="experience-header">
+                        <p>Research Intern (IEEE Project) @ Ramaiah Institute of Technology</p>
+                        <p class="dates">September 2023 – May 2024</p>
+                    </div>
+                    <ul>
+                        <li>Worked on Asphyxia detection using AI and Machine Learning, focusing on automated classification of neonatal cry signals.</li>
+                        <li>Implemented an encoder–decoder architecture, achieving 82% accuracy in distinguishing between asphyxiated and non-asphyxiated cry signals.</li>
+                        <li>Utilized MATLAB for visualization and spectrogram-based analysis, enabling detailed feature extraction for model development.</li>
+                    </ul>
+                </article>
             </div>
         </section>
     </main>
 
-    <footer class="footer dark-section" id="contact">
+    <footer class="footer" id="contact">
         <div class="container">
             <div class="section-title-wrapper">
                 <h2>Contact Me</h2>
