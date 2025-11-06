@@ -131,19 +131,17 @@
 
         /* --- THIS IS THE UPDATED HEADER SECTION --- */
         .header {
-            /* Made the white gradient overlay much more transparent */
-            background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.2)), 
+            /* We added a semi-transparent DARK overlay (rgba(0,0,0,0.5)) */
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
                         url('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Indian_Institute_of_Science%2C_Bangalore_-_Main_Building.jpg/1280px-Indian_Institute_of_Science%2C_Bangalore_-_Main_Building.jpg');
             background-size: cover;
             background-position: center;
-            color: var(--light); /* Changed text to white for contrast */
+            color: var(--light); /* Keep text white */
             text-align: center;
             padding: 8rem 0;
             position: relative;
             overflow: hidden;
         }
-
-        /* I have REMOVED the .header::before rule, as it was hiding the image */
 
         @keyframes moveGrid {
             0% { transform: translate(0, 0); }
@@ -152,22 +150,22 @@
 
         .header h1 {
             font-size: 3.5rem;
-            color: var(--light); /* Changed text to white */
+            color: var(--light); /* White text */
             position: relative;
             z-index: 2;
             animation: fadeInUp 1s ease;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.6); /* Darker shadow for white text */
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.4); /* Softer shadow, as overlay does the work */
             font-weight: 700;
         }
 
         .header .tagline {
             font-size: 1.3rem;
             margin-top: 0.5rem;
-            color: var(--light); /* Changed text to white */
+            color: var(--light); /* White text */
             position: relative;
             z-index: 2;
             animation: fadeInUp 1s ease 0.2s backwards;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.6); /* Darker shadow for white text */
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.4); /* Softer shadow */
             font-weight: 500;
         }
         /* --- END OF HEADER SECTION CHANGES --- */
