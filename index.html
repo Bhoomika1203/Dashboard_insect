@@ -46,12 +46,14 @@
             color: var(--dark-color);
         }
 
+        /* --- NEW COLOR --- Made section titles blue */
         h2 {
             font-size: 2.2rem;
             text-align: center;
             margin-bottom: 2rem;
             padding-bottom: 0.5rem;
-            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color); /* Was var(--dark-color) */
+            border-bottom: 3px solid var(--dark-color); /* Was var(--primary-color) */
             display: inline-block;
         }
         
@@ -172,17 +174,20 @@
         .card {
             background: var(--light-color);
             border: 1px solid #ddd;
+            /* --- NEW COLOR --- Added a blue left border */
+            border-left: 6px solid var(--primary-color);
             border-radius: 8px;
             padding: 2rem;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            /* --- ANIMATION --- Added smooth transition */
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            /* --- NEW ANIMATION --- Set transition to 'all' */
+            transition: all 0.3s ease-in-out;
         }
         
-        /* --- ANIMATION --- This is the new hover effect */
+        /* --- NEW ANIMATION --- Updated hover effect */
         .card:hover {
-            transform: translateY(-10px); /* Lifts the card up more */
+            transform: translateY(-10px) scale(1.02); /* Lifts and scales up */
             box-shadow: 0 12px 20px rgba(0,0,0,0.12); /* Stronger shadow */
+            border-left-color: var(--dark-color); /* Changes border color */
         }
         
         .card h3 {
@@ -190,6 +195,12 @@
             color: var(--primary-color);
             margin-bottom: 0.5rem;
             position: relative; /* Needed for the icon animation */
+            transition: color 0.3s ease; /* Add transition for color change */
+        }
+        
+        /* --- NEW ANIMATION --- Change title color on hover */
+        .card:hover h3 {
+            color: var(--dark-color);
         }
         
         /* Experience Card Specifics */
@@ -237,7 +248,7 @@
         }
         
         .footer h2 {
-            color: var(--light-color);
+            color: var(--light-color); /* Footer title is white */
             border-bottom-color: var(--primary-color);
         }
 
