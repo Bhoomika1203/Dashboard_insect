@@ -129,31 +129,21 @@
             width: 100%;
         }
 
+        /* --- THIS IS THE UPDATED HEADER SECTION --- */
         .header {
-            background: linear-gradient(135deg, rgba(0,147,233,0.9) 0%, rgba(102,126,234,0.9) 50%, rgba(118,75,162,0.9) 100%), 
+            /* Made the white gradient overlay much more transparent */
+            background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.2)), 
                         url('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Indian_Institute_of_Science%2C_Bangalore_-_Main_Building.jpg/1280px-Indian_Institute_of_Science%2C_Bangalore_-_Main_Building.jpg');
             background-size: cover;
             background-position: center;
-            background-blend-mode: multiply;
-            color: var(--light);
+            color: var(--light); /* Changed text to white for contrast */
             text-align: center;
             padding: 8rem 0;
             position: relative;
             overflow: hidden;
         }
 
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: moveGrid 20s linear infinite;
-            z-index: 1;
-        }
+        /* I have REMOVED the .header::before rule, as it was hiding the image */
 
         @keyframes moveGrid {
             0% { transform: translate(0, 0); }
@@ -162,22 +152,25 @@
 
         .header h1 {
             font-size: 3.5rem;
-            color: var(--light);
+            color: var(--light); /* Changed text to white */
             position: relative;
             z-index: 2;
             animation: fadeInUp 1s ease;
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.6); /* Darker shadow for white text */
+            font-weight: 700;
         }
 
         .header .tagline {
             font-size: 1.3rem;
             margin-top: 0.5rem;
-            color: var(--light);
+            color: var(--light); /* Changed text to white */
             position: relative;
             z-index: 2;
             animation: fadeInUp 1s ease 0.2s backwards;
-            text-shadow: 1px 1px 8px rgba(0,0,0,0.3);
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.6); /* Darker shadow for white text */
+            font-weight: 500;
         }
+        /* --- END OF HEADER SECTION CHANGES --- */
 
         @keyframes fadeInUp {
             from {
@@ -303,7 +296,6 @@
             transition: color 0.3s ease;
         }
 
-        /* Project-specific background images on hover */
         .project-card:nth-child(1):hover::after {
             content: '🦾';
             position: absolute;
@@ -345,7 +337,6 @@
             50% { transform: translateY(-50%) translateX(-10px); }
         }
 
-        /* Experience cards - lighter theme */
         .experience-card {
             background: linear-gradient(135deg, #e8f4f8 0%, #d4e9f7 100%);
             color: var(--text);
@@ -466,7 +457,6 @@
             animation: popIn 0.3s ease forwards;
         }
 
-        /* Experience card background icons */
         .experience-card::after {
             position: absolute;
             right: 20px;
